@@ -5,8 +5,11 @@
   outputs = {
     self,
     nixpkgs,
-  }: rec {
-    nixosConfigurations.rpi2 = nixpkgs.lib.nixosSystem {
+  }: let 
+    inherit (nixpkgs) lib;
+    forAllSystems = lib.genAttrs lib.systems.flakeExposed;
+  in rec {
+    nixosConfigurations.rpi = lib.nixosSystem {
 #      specialArgs = {modulesPath = "${nixpkgs}/nixos/modules";};
       modules = [
         "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-raspberrypi.nix"
@@ -15,6 +18,6 @@
       ];
     };
 
-    images.rpi2 = nixosConfigurations.rpi2.config.system.build.sdImage;
+    packages = forAllSystems (system: {default = nixosConfigurations.rpi.config.system.build.sdImage;});
   };
 }

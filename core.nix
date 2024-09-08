@@ -27,7 +27,10 @@ in {
       pkgs.raspberrypiWirelessFirmware
     ];
   };
-  networking.wireless.enable = true;
+  networking = {
+    wireless.enable = true;
+    hostName = "rpi";
+  };
 
   # Boot
   boot = {
